@@ -25,11 +25,27 @@
     }
     $select_db = mysqli_select_db($connect, "carsdb");
     mysqli_query($connect, "SET NAMES utf8");
-    $select = mysqli_query($connect, "SELECT c.Mark, c.Number, f.Mark as Fuel, c.AverageConsumption
-                          FROM  Car c LEFT JOIN Fuel f ON c.FuelId = f.Id") or trigger_error(mysqli_error($connect));
+    $select = mysqli_query($connect, "
+      SELECT c.Mark,
+       c.Number,
+       f.Mark as Fuel,
+             CONCAT(d.Surname, ' ', d.Name, ' ', d.Patronymic) as Name,
+       c.AverageConsumption
+                          FROM  Car c 
+                            LEFT JOIN Fuel f ON c.FuelId = f.Id
+                            LEFT JOIN Driver d ON c.DriverId = d.Id
+"
+
+    ) or trigger_error(mysqli_error($connect));
     while ($row = mysqli_fetch_array($select)) {
 
-        echo "<tr><td>" . $row['Mark'] . "</td><td>" . $row['Number'] . "</td><td>" . $row['Fuel'] . "</td><td>" . $row['AverageConsumption'] . "</td></tr>";
+        echo "<tr>
+<td>" . $row['Mark'] . "</td>
+<td>" . $row['Number'] . "</td>
+<td>" . $row['Fuel'] . "</td>
+<td>" . $row['Name'] . "</td>
+<td>" . $row['AverageConsumption'] . "</td>
+</tr>";
     }
 
     mysqli_close($connect);
